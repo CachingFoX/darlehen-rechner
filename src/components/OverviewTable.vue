@@ -37,7 +37,7 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
     <div class="table-main">
       <div>
         <div class="table">
-          <div>Darlehnssumme</div>
+          <div>Darlehenssumme</div>
           <div class="col-span-2">
             <ValueCurrency :value="storeDarlehen.Darlehenssumme" />
           </div>
@@ -82,7 +82,7 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
             <ValueCurrency
               :value="
                 props.planOrigin.monate.length > storeDarlehen.Laufzeit
-                  ? props.planOrigin.monate[storeDarlehen.Laufzeit].darlehn
+                  ? props.planOrigin.monate[storeDarlehen.Laufzeit].darlehen
                   : 0
               "
             />
@@ -92,7 +92,7 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
               v-show="is_show"
               :value="
                 props.planCurrent.monate.length > storeDarlehen.Laufzeit
-                  ? props.planCurrent.monate[storeDarlehen.Laufzeit].darlehn
+                  ? props.planCurrent.monate[storeDarlehen.Laufzeit].darlehen
                   : 0
               "
             />

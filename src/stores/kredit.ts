@@ -84,7 +84,7 @@ export function defineKreditStore(
         result.push({
           monat_absolute: storeDarlehen.Beginn + index,
           monat_relative: index,
-          darlehn: d / 100,
+          darlehen: d / 100,
           rate: real_rate / 100,
           tilgung: _tilgungssatz,
           zins: _zinsrate / 100,
