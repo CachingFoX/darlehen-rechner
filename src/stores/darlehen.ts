@@ -5,7 +5,7 @@ import { ref, computed } from "vue";
   Dieser Pinia Store enthält alle Grunddaten zu einem Annuitätendarlehen.
 */
 export const useDarlehenStore = defineStore(
-  "Darlehn",
+  "Darlehen",
   () => {
     const Darlehenssumme = ref(50000);
     const Zinssatz = ref(0.05);

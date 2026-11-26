@@ -65,7 +65,7 @@ watch(
         {{ textMonatLang(rate.monat_absolute % 12) }}
       </div>
       <div class="body">
-        <ValueCurrency :value="rate.darlehn * -1" />
+        <ValueCurrency :value="rate.darlehen * -1" />
       </div>
       <div class="body">
         <ValuePercent :value="rate.tilgung" />
