@@ -13,18 +13,20 @@ const props = defineProps({
   planCurrent: { type: Object, default: null },
 });
 
-const store = ref(props.plan);
+// const store = ref(props.plan);
 
 import { useDarlehenStore } from "../stores/darlehen.ts";
 
 const storeDarlehen = useDarlehenStore();
 
+/*
 watch(
   () => props.plan,
   (neu, alt) => {
     store.value = neu;
   },
 );
+*/
 
 const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
 </script>
