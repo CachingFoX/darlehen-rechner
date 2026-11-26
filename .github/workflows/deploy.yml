@@ -35,6 +35,8 @@ jobs:
         run: npm ci
 
       - name: Anwendung bauen
+        env:
+           BASE_PATH: /${{ github.event.repository.name }}/
         run: npm run build
 
       - name: Pages konfigurieren
