@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import ConfirmInput from "./ConfirmInput.vue";
 import ValueCurrency from "./ValueCurrency.vue";
 import ValuePercent from "./ValuePercent.vue";
 import {
@@ -38,34 +39,58 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
         <div class="table">
           <div>Darlehenssumme</div>
           <div class="col-span-2">
-            <ValueCurrency :value="storeDarlehen.Darlehenssumme" />
+            <ConfirmInput
+              v-model="storeDarlehen.Darlehenssumme"
+              placeholder="Darlehenssumme"
+              type="number"
+              unit="€"
+            >
+              <ValueCurrency :value="storeDarlehen.Darlehenssumme" />
+            </ConfirmInput>
           </div>
 
           <div>Zinssatz</div>
           <div class="col-span-2">
-            <ValuePercent :value="storeDarlehen.Zinssatz" />
+            <ConfirmInput
+              v-model="storeDarlehen.Zinssatz"
+              type="number"
+              unit="%"
+            >
+              <ValuePercent :value="storeDarlehen.Zinssatz" />
+            </ConfirmInput>
           </div>
 
           <div>Tilgungssatz</div>
           <div class="col-span-2">
-            <ValuePercent :value="storeDarlehen.Tilgungssatz" />
+            <ConfirmInput
+              v-model="storeDarlehen.Tilgungssatz"
+              type="number"
+              unit="%"
+            >
+              <ValuePercent :value="storeDarlehen.Tilgungssatz" />
+            </ConfirmInput>
           </div>
 
           <div>Bereitstellung</div>
           <div class="col-span-2">
-            {{ textMonatLangJahr(storeDarlehen.Beginn) }}
+            <ConfirmInput
+              type="number"
+              v-model="storeDarlehen.Beginn"
+              unit="Monate"
+            >
+              {{ textMonatLangJahr(storeDarlehen.Beginn) }}
+            </ConfirmInput>
           </div>
 
           <div>Laufzeit</div>
           <div class="col-span-2">
-            {{ textZeitspanne(storeDarlehen.Laufzeit) }}
-          </div>
-
-          <div>Ende Zinsbindung</div>
-          <div class="col-span-2">
-            {{
-              textMonatLangJahr(storeDarlehen.Beginn + storeDarlehen.Laufzeit)
-            }}
+            <ConfirmInput
+              type="number"
+              v-model="storeDarlehen.Laufzeit"
+              unit="Monate"
+            >
+              {{ textZeitspanne(storeDarlehen.Laufzeit) }}
+            </ConfirmInput>
           </div>
 
           <div></div>
@@ -74,6 +99,18 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
           </div>
           <div style="font-weight: bold; margin-top: 1em">
             <div v-show="is_show">{{ props.planCurrent.id }}</div>
+          </div>
+
+          <div>Ende Zinsbindung</div>
+          <div class="co">
+            {{
+              textMonatLangJahr(storeDarlehen.Beginn + storeDarlehen.Laufzeit)
+            }}
+          </div>
+          <div class="col-span-1">
+            <span v-show="is_show">{{
+              textMonatLangJahr(storeDarlehen.Beginn + storeDarlehen.Laufzeit)
+            }}</span>
           </div>
 
           <div>Restschuld</div>

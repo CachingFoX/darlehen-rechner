@@ -40,14 +40,9 @@ export function defineKreditStore(
       const zinstageplan = ref(initialZinstageplan);
 
       function __ts(monat_index: number): number {
-        do {
-          if (monat_index in tilgungsplan.value) {
-            return (
-              tilgungsplan.value[monat_index] ?? storeDarlehen.Tilgungssatz
-            );
-          }
-          monat_index--;
-        } while (monat_index > 0);
+        if (monat_index in tilgungsplan.value) {
+          return tilgungsplan.value[monat_index] ?? storeDarlehen.Tilgungssatz;
+        }
         return storeDarlehen.Tilgungssatz;
       }
 
