@@ -9,7 +9,9 @@ const darlehen = useDarlehenStore();
 
 const storeDarlehen = useDarlehenStore();
 
-function downloadJSON(data, filename = "darlehen.json") {
+const fileInput = ref<HTMLInputElement | null>(null);
+
+function downloadJSON(data: object, filename = "darlehen.json") {
   const json = JSON.stringify(data, null, 2); // null, 2 = hübsch formatiert
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -29,17 +31,32 @@ function downloadDarlehenDaten() {
   let data = {
     Version: 1,
     Darlehen: storeDarlehen.$state,
-    Verlaeufe: [plaene[0].$state, plaene[1].$state],
+    Verlaeufe: [plaene[0]?.$state, plaene[1]?.$state],
   };
+
   downloadJSON(data);
 }
 
-function importiere(data) {
+interface VerlaufData {
+  id?: string;
+  name?: string;
+  tilgungsplan?: Record<number, number>;
+  sondertilgungsplan?: Record<number, number>;
+  zinstageplan?: Record<number, number>;
+}
+
+interface DarlehenData {
+  Version?: number;
+  Darlehen?: object;
+  Verlaeufe?: VerlaufData[];
+}
+
+function importiere(data: DarlehenData) {
   // Hier ggf. validieren, bevor der State überschrieben wird
   if (typeof data !== "object" || data === null) {
     throw new Error("Ungültiges JSON-Format");
   }
-  if (!("version" in data) && !("Version" in data)) {
+  if (!("Version" in data)) {
     throw new Error(
       "Ungültiges JSON-Format: Missing member 'Version' or 'version'",
     );
@@ -50,32 +67,53 @@ function importiere(data) {
     );
   }
 
-  storeDarlehen.$patch(data.Darlehen);
-  plaene[0].reset();
-  plaene[0].$patch(data.Verlaeufe[0]);
-  plaene[1].reset();
-  plaene[1].$patch(data.Verlaeufe[1]);
+  if (data.Darlehen) {
+    // TODO reset
+    storeDarlehen.$patch(data.Darlehen);
+  }
+
+  const ersterVerlauf = data.Verlaeufe?.[0];
+  if (plaene[0] && ersterVerlauf) {
+    plaene[0].reset();
+    plaene[0].$patch(ersterVerlauf);
+  }
+
+  const zweiterVerlauf = data.Verlaeufe?.[0];
+  if (plaene[1] && zweiterVerlauf) {
+    plaene[1].reset();
+    plaene[1].$patch(zweiterVerlauf);
+  }
 }
 
-const fileInput = ref(null);
+function uploadDarlehenDaten() {
+  fileInput.value?.click();
+}
 
-async function onFileChange(event) {
+async function onFileChange(event: Event) {
   // fehler.value = "";
-  const file = event.target.files[0];
-  if (!file) return;
+  if (event == null) {
+    return;
+  }
+
+  const target = event.target as HTMLInputElement | null;
+  const file = target?.files?.[0];
+
+  if (!file) return; // Bricht ab, falls keine Datei gewählt wurde
 
   try {
     const text = await file.text();
-    const json = JSON.parse(text);
+    const json = JSON.parse(text) as DarlehenData;
     importiere(json);
   } catch (e) {
     let fehler =
       e instanceof SyntaxError
         ? "Die Datei enthält kein gültiges JSON."
-        : e.message;
+        : e instanceof Error
+          ? e.message
+          : String(e);
     console.error(fehler);
   } finally {
-    event.target.value = ""; // erlaubt erneutes Hochladen derselben Datei
+    (event.target as HTMLInputElement).value = "";
   }
 }
 </script>
@@ -83,7 +121,7 @@ async function onFileChange(event) {
 <template>
   <div style="margin-bottom: 1em; display: flex; gap: 1em">
     <button class="button" @click="downloadDarlehenDaten">Download</button>
-    <button class="button" type="button" @click="fileInput.click()">
+    <button class="button" type="button" @click="uploadDarlehenDaten">
       Uplaod
     </button>
     <input
