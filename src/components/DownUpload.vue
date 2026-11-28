@@ -5,8 +5,6 @@ import { useBaseKreditStore, useRealKreditStore } from "../stores/kredit.ts";
 import { useDarlehenStore } from "../stores/darlehen.ts";
 
 const plaene = [useBaseKreditStore(), useRealKreditStore()];
-const plan_index = ref(0);
-const plan = computed(() => plaene[plan_index.value]);
 const darlehen = useDarlehenStore();
 
 const storeDarlehen = useDarlehenStore();
@@ -27,16 +25,36 @@ function downloadJSON(data, filename = "darlehen.json") {
   URL.revokeObjectURL(url);
 }
 
-function fox1() {
-  downloadJSON(storeDarlehen.$state);
+function downloadDarlehenDaten() {
+  let data = {
+    Version: 1,
+    Darlehen: storeDarlehen.$state,
+    Verlaeufe: [plaene[0].$state, plaene[1].$state],
+  };
+  downloadJSON(data);
 }
 
-function importiere(json) {
+function importiere(data) {
   // Hier ggf. validieren, bevor der State überschrieben wird
-  if (typeof json !== "object" || json === null) {
+  if (typeof data !== "object" || data === null) {
     throw new Error("Ungültiges JSON-Format");
   }
-  storeDarlehen.$patch(json);
+  if (!("version" in data) && !("Version" in data)) {
+    throw new Error(
+      "Ungültiges JSON-Format: Missing member 'Version' or 'version'",
+    );
+  }
+  if (data.Version != 1) {
+    throw new Error(
+      "Ungültiges JSON-Format: Unknown/Unsupported version " + data.Version,
+    );
+  }
+
+  storeDarlehen.$patch(data.Darlehen);
+  plaene[0].reset();
+  plaene[0].$patch(data.Verlaeufe[0]);
+  plaene[1].reset();
+  plaene[1].$patch(data.Verlaeufe[1]);
 }
 
 const fileInput = ref(null);
@@ -64,7 +82,7 @@ async function onFileChange(event) {
 
 <template>
   <div style="margin-bottom: 1em; display: flex; gap: 1em">
-    <button class="button" @click="fox1">Download</button>
+    <button class="button" @click="downloadDarlehenDaten">Download</button>
     <button class="button" type="button" @click="fileInput.click()">
       Uplaod
     </button>
@@ -85,16 +103,5 @@ async function onFileChange(event) {
 }
 .button.selected {
   border: 3px solid #f00;
-}
-.header {
-  font-size: 48pt;
-  font-weight: 200;
-  color: #222;
-  border-bottom: 2px solid #222;
-  line-height: 1;
-}
-.version {
-  margin-bottom: 0.5em;
-  padding-bottom: 0.15em;
 }
 </style>
