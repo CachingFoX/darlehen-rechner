@@ -32,7 +32,6 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
 </script>
 
 <template>
-  <div class="header">Annuitätendarlehen Rechner</div>
   <div class="table-container">
     <div class="table-main">
       <div>
@@ -164,15 +163,6 @@ const is_show = computed(() => props.planOrigin.id != props.planCurrent.id);
 </template>
 
 <style scoped>
-.header {
-  font-size: 48pt;
-  font-weight: 200;
-  color: #222;
-  border-bottom: 2px solid #222;
-  line-height: 1;
-  padding-bottom: 0.15em;
-  margin-bottom: 0.5em;
-}
 .table-container {
   margin-bottom: 1.5em;
 }
