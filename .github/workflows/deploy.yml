@@ -4,6 +4,7 @@ on:
   # Wird ausgeführt, wenn etwas auf main landet (z. B. durch einen gemergten Pull Request)
   push:
     branches: [main]
+    tags: ["v*"]
   # Manueller Start von einem beliebigen Branch (Actions-Tab -> "Run workflow")
   workflow_dispatch:
 
@@ -33,6 +34,11 @@ jobs:
 
       - name: Abhängigkeiten installieren
         run: npm ci
+
+      - name: Version und Commit ermitteln
+        run: |
+          echo "GIT_COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "APP_VERSION=$(git describe --tags --always)" >> $GITHUB_ENV
 
       - name: Anwendung bauen
         env:

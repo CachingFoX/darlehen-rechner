@@ -10,9 +10,26 @@ const plaene = [useBaseKreditStore(), useRealKreditStore()];
 const plan_index = ref(0);
 const plan = computed(() => plaene[plan_index.value]);
 const darlehen = useDarlehenStore();
+
+const version = __APP_VERSION__;
+const commit = __COMMIT_HASH__;
 </script>
 
 <template>
+  <footer>
+    Version:
+    <a
+      :href="
+        'https://github.com/CachingFoX/darlehen-rechner/releases/tag/' + version
+      "
+      >{{ version }}</a
+    >
+    Hash:
+    <a
+      :href="'https://github.com/CachingFoX/darlehen-rechner/commit/' + commit"
+      >{{ commit }}</a
+    >
+  </footer>
   <OverviewTable :plan-origin="plaene[0]" :plan-current="plan" />
   <div style="margin-bottom: 1em; display: flex; gap: 1em">
     <button
