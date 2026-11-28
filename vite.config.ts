@@ -5,7 +5,7 @@ import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
 import { execSync } from "node:child_process";
 
-function git(cmd, fallback) {
+function git(cmd: string, fallback: string) {
   try {
     return execSync(cmd).toString().trim();
   } catch {
