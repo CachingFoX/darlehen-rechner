@@ -87,3 +87,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 */
 }
+
+.monospace {
+  font-family: monospace !important;
+}
+.right {
+  text-align: right !important;
+}
+
+.left {
+  text-align: left !important;
+}
